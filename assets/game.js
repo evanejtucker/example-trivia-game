@@ -12,7 +12,7 @@ $(document).ready(function() {
         },
         {
             question: "Which Country has the highest population density",
-            answers: ["Macau", "Monaco", "Singapore", "HongKong"],
+            answers: ["Macau", "Monaco", "Singapore", "Hong Kong"],
             answer: "Macau"
         },
         {
@@ -39,8 +39,8 @@ $(document).ready(function() {
     //  the "run" function
     var intervalId;
 
+    // game scores
     var correct = 0;
-
     var incorrect = 0;
 
 // functions
@@ -75,12 +75,20 @@ $(document).ready(function() {
         submitGame();
     };
 
+
     function addQuestions() {
+        // loop through questions array
         for (var i=0; i<questions.length; i++) {
+            // for every question, create a h4 to hold the question
             $('.questions-box').append("<h4>" + (i+1) + ": " +  questions[i].question + "</h4>");
+            // loop through the answers array for current question
             for (var k=0; k<questions[i].answers.length; k++) {
+                // create a radio button for every answer option and append it to the screen
+                // keep the name for each radio-btn group the same
+                // this makes it so you can only choose 1 radio-btn for each question
                 $('.questions-box').append("<input type='radio' value='" + questions[i].answers[k] + "' name='question-" + i + "'>" + questions[i].answers[k] + "<br>");
             }
+            // add a line after every question for styling
             $('.questions-box').append("<hr>");
         }
     };
@@ -92,14 +100,13 @@ $(document).ready(function() {
             // if there is, check to see if its value = the correct answer
             // add 1 to correct or incorrect, then move onto the next question
             $.each($("input[name='question-"+ i +"']:checked"), function() {
-                console.log($(this));
-                console.log($(this).attr('value'));
                 var userGuess = $(this).attr('value');
+                console.log('User Guess: ' + userGuess);
                 if (userGuess === questions[i].answer) {
                     console.log('you got it right!');
                     correct++;
                 }  else {
-                    console.log('you got it wrong');
+                    console.log('you got it wrong :(');
                     incorrect++;
                 }
             });
@@ -143,7 +150,6 @@ $(document).ready(function() {
     newGame();
 
     $('#submit').on('click', function() {
-        // stopTimer();
         stopTimer();
     });
 
