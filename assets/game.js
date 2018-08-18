@@ -28,7 +28,7 @@ $(document).ready(function() {
         {
             question: "What is the world's largest lake",
             answers: ["Caspian Sea", "Lake Superior", "Lake Victoria", "Lake Huron"],
-            answer: "Caspain Sea"
+            answer: "Caspian Sea"
         }
     ]
 
@@ -43,16 +43,12 @@ $(document).ready(function() {
 
     var incorrect = 0;
 
-    var quizComplete = false;
-
-
 // functions
 // ---------------------------------------------------------------------->
 
-
     function runTimer() {
         // update dom
-        counter = 100;
+        counter = 60;
         $('.timer').text(counter);
         // clear intervalId so timer doesnt run multiple times
         clearInterval(intervalId);
@@ -75,12 +71,13 @@ $(document).ready(function() {
     function stopTimer() {
         // clears the timer
         clearInterval(intervalId);
+        // submit game
+        submitGame();
     };
 
     function addQuestions() {
         for (var i=0; i<questions.length; i++) {
-            // var newQuestion = $("<h4>").text(questions[i].question);
-            $('.questions-box').append("<h4>" + questions[i].question + "</h4>");
+            $('.questions-box').append("<h4>" + (i+1) + ": " +  questions[i].question + "</h4>");
             for (var k=0; k<questions[i].answers.length; k++) {
                 $('.questions-box').append("<input type='radio' value='" + questions[i].answers[k] + "' name='question-" + i + "'>" + questions[i].answers[k] + "<br>");
             }
@@ -89,8 +86,11 @@ $(document).ready(function() {
     };
 
     function submitGame() {
-        // loop through array
+        // loop through array of questions
         for (var i=0; i<questions.length; i++) {
+            // for each button grounp, check to see if there is a button thats checked
+            // if there is, check to see if its value = the correct answer
+            // add 1 to correct or incorrect, then move onto the next question
             $.each($("input[name='question-"+ i +"']:checked"), function() {
                 console.log($(this));
                 console.log($(this).attr('value'));
@@ -98,9 +98,7 @@ $(document).ready(function() {
                 if (userGuess === questions[i].answer) {
                     console.log('you got it right!');
                     correct++;
-                } if (userGuess===null) {
-                    console.log('well shit');
-                } else {
+                }  else {
                     console.log('you got it wrong');
                     incorrect++;
                 }
@@ -122,22 +120,20 @@ $(document).ready(function() {
         // reset variables
         correct = 0;
         incorrect = 0;
+        // randomize the answers array
+        shuffleArray();
         // append questions to screen
         addQuestions();
         // start timer
         runTimer()
-        // disableSubmit();
     };
 
-    function disableSubmit() {
-        $('#submit').attr("disabled", true);
-    };
-
-    function checkQuiz() {
-        $.each($("input[name='question-"+ i +"']:checked"), function() {
-          console.log($(this));  
-        })
-    };
+    function shuffleArray() {
+        // loops through teh questions object, and randomize each answers array
+        for (var i=0; i< questions.length; i++) {
+            questions[i].answers.sort(function(a, b){return 0.5 - Math.random()});
+        }
+    }
 
 
 // main process
@@ -146,10 +142,9 @@ $(document).ready(function() {
     // start game on page load
     newGame();
 
-    
-
     $('#submit').on('click', function() {
-        submitGame();
+        // stopTimer();
+        stopTimer();
     });
 
     $('#newGame').on('click', function() {
